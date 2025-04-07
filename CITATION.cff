@@ -8,21 +8,21 @@ message: >-
   from this file.
 type: dataset
 authors:
-  - given-names: Casper
-    family-names: M. Lyngbye
+  - given-names: M. Lyngbye
+    family-names: Casper
     affiliation: Aalborg University
-  - given-names: 'Luca '
-    family-names: D. Borhi
+  - given-names: D. Borhi
+    family-names: Luca
     affiliation: Aalborg University
-  - given-names: Thea
-    family-names: A. Dencker
+  - given-names: A. Dencker
+    family-names: Thea
     affiliation: Aalborg University
-  - given-names: Jonas
-    family-names: N. Rasmussen
+  - given-names: N. Rasmussen
+    family-names: Jonas
     affiliation: Aalborg University
 repository-code: >-
   https://github.com/MeldgaardL/Entomopathogenic-Nematodes-AAU
 url: >-
   https://github.com/MeldgaardL/Entomopathogenic-Nematodes-AAU
 license: MIT
-date-released: '2025-04-07'
+date-released: '2025'
