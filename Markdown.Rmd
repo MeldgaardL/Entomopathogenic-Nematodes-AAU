@@ -3,6 +3,7 @@ title: "Markdown Report"
 author: "Casper M. Lyngbye, Thea A. Dencker, Jonas N. Rasmussen, Lucy. D. Borhi"
 date: "2025-04-07"
 output: html_document
+
 ---
 
 ```{r setup, include=FALSE}
@@ -19,26 +20,29 @@ library(readxl)
 library(tidyverse)
 library(ggthemes)
 library(patchwork)
-
 ```
 
 
 ## Creating maps
+When taking samples, pictures were taken of each location, this was done so that the metadata could be used for the creation of maps. This didnt work out as planned, as the GPS coordinates are inaccurate;
 
 ```{r Picture Map, warning=FALSE, error=FALSE, message=FALSE}
-pictures = list.files(path = "Pictures/", pattern = "*.HEIC", full.names = TRUE)
-
-dat <- read_exif(pictures)
-
-dat.gps = select(dat,
-                 SourceFile, DateTimeOriginal,
-                 GPSLongitude, GPSLatitude,
-                 GPSTimeStamp)
-leaflet(dat.gps) %>%
-  addProviderTiles("Esri.WorldImagery") %>%
-  addMarkers(~ GPSLongitude, ~ GPSLatitude)  
+#pictures = list.files(path = "Pictures/", pattern = "*.HEIC", full.names = TRUE)
+#
+#dat <- read_exif(pictures)
+#
+#dat.gps = select(dat,
+#                 SourceFile, DateTimeOriginal,
+#                 GPSLongitude, GPSLatitude,
+#                 GPSTimeStamp)
+#leaflet(dat.gps) %>%
+#  addProviderTiles("Esri.WorldImagery") %>%
+#  addMarkers(~ GPSLongitude, ~ GPSLatitude)  
 
 ```
+As seen, some GPS coordinates are correct, althouggh others arent, we also took GPS coordinates via the GAIA gps app, which were more stabile, this is shown below, although its only the sample locations, without the 3 subsamples.
+
+
 ```{r GoodMap, warning=FALSE, error=FALSE, message=FALSE}
 datgps = read_excel("Data/Sample_location.xlsx")
 
@@ -71,9 +75,11 @@ leaflet(datgps,
 
 
 
-## Worm Data
+## Data from laboratory
 
-```{r WormData}
+We have noted how many larvae died and pupaeted under the experiments, we had 3 different rebaiting days, so three sheets, one for each baiting period. These will be bound together, and mutated so that sample and subsample is a factor, rather than an integer.
+
+```{r LarvaeData}
 df =  rbind(read_excel("Data/Data.xlsx", sheet = 1),
             read_excel("Data/Data.xlsx", sheet = 2),
             read_excel("Data/Data.xlsx", sheet = 3)) %>%
@@ -84,7 +90,7 @@ df
 
 
 ## Positive Negative Plot of samples
-
+To find out which of the samples has been positive for EPNs, we noted it in its own column, after confirming that EPNs are present under microscope. This can be used, as seen below.
 
 ```{r PosNegPlot, warning=FALSE, error=FALSE}
 grid_forest = df %>%
@@ -110,15 +116,17 @@ grid_beet = df %>%
   theme_classic()
 
 
-(grid_forest/grid_beet) + 
-  plot_annotation(tag_levels = "A")+
-  plot_layout(guides = "collect") & theme(legend.position = 'bottom',
+PosNegPlot = (grid_forest/grid_beet) + 
+              plot_annotation(tag_levels = "A")+
+              plot_layout(guides = "collect") & theme(legend.position = 'bottom',
                                           legend.text=element_text(size=7),
                                           legend.key.size = unit(.45, "cm"))
+PosNegPlot
 ```
 
 ```{r PosNegPlotSave, include = FALSE}
-ggsave("PosNegPlot.tiff", 
+ggsave(plot = PosNegPlot,
+       filename = "PosNegPlot.tiff", 
        path = "Plots/",
        width =5,
        height = 5,
