@@ -9,22 +9,135 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Loading libraries
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+```{r Libraries, warning=FALSE, error=FALSE, message=FALSE}
+library(exifr)
+library(dplyr)
+library(leaflet)
+library(readxl)
+library(tidyverse)
+library(ggthemes)
+library(patchwork)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+## Creating maps
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r Picture Map, warning=FALSE, error=FALSE, message=FALSE}
+pictures = list.files(path = "Pictures/", pattern = "*.HEIC", full.names = TRUE)
+
+dat <- read_exif(pictures)
+
+dat.gps = select(dat,
+                 SourceFile, DateTimeOriginal,
+                 GPSLongitude, GPSLatitude,
+                 GPSTimeStamp)
+leaflet(dat.gps) %>%
+  addProviderTiles("Esri.WorldImagery") %>%
+  addMarkers(~ GPSLongitude, ~ GPSLatitude)  
+
+```
+```{r GoodMap, warning=FALSE, error=FALSE, message=FALSE}
+datgps = read_excel("Data/Sample_location.xlsx")
+
+leaflet(datgps,
+        options = leafletOptions(zoomControl = FALSE)) %>%
+  addProviderTiles("Esri.WorldImagery") %>%
+  addCircleMarkers(lng = ~ `long _x`, 
+                   lat = ~ lat_y,
+                   radius = 3,
+                   color = "dodgerblue", 
+                   label = ~Location,
+                   labelOptions = labelOptions(noHide = TRUE,
+                                               textOnly = TRUE,
+                                               direction = "top",
+                                style = list(
+                                  "color" = "white",
+                                  "font-family" = "serif",
+                                  "font-style" = "bold",
+                                  "box-shadow" = "3px 3px rgba(0,0,0,0)",
+                                  "font-size" = "14px",
+                                  "border-color" = "rgba(0,0,0,0)"
+                                )))%>%
+  addMiniMap(position = "topright",
+             height = 250,
+             width = 200,
+             zoomLevelOffset = -6.69,
+             aimingRectOptions = list(color = "red", weight = 1, clickable = FALSE))%>%
+  addScaleBar(position = "topleft")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+## Worm Data
+
+```{r WormData}
+df =  rbind(read_excel("Data/Data.xlsx", sheet = 1),
+            read_excel("Data/Data.xlsx", sheet = 2),
+            read_excel("Data/Data.xlsx", sheet = 3)) %>%
+      mutate(sample    = as.factor(sample),
+             subsample = as.factor(subsample))
+df
+```
+
+
+## Positive Negative Plot of samples
+
+
+```{r PosNegPlot, warning=FALSE, error=FALSE}
+grid_forest = df %>%
+  filter(location == "Forest")%>%
+  ggplot(aes(sample,subsample))+
+  geom_tile(aes(fill = infected, width = 1, height = 0.4), alpha  = .8, color = "black")+
+  scale_fill_manual(values = c("#eb346e", "#89eb34"),
+                    name = "")+
+  labs(x = "Sample",
+       y = "Subsample")+
+  facet_wrap(~date)+
+  theme_classic()
+
+grid_beet = df %>%
+  filter(location == "Beet Field")%>%
+  ggplot(aes(sample,subsample))+
+  geom_tile(aes(fill = infected, width = 1, height = 0.4), alpha  = .8, color = "black")+
+  scale_fill_manual(values = c("#eb346e", "#89eb34"),
+                    name = "")+
+  labs(y = "Subsample",
+       x = "Sample")+
+  facet_wrap(~date)+
+  theme_classic()
+
+
+(grid_forest/grid_beet) + 
+  plot_annotation(tag_levels = "A")+
+  plot_layout(guides = "collect") & theme(legend.position = 'bottom',
+                                          legend.text=element_text(size=7),
+                                          legend.key.size = unit(.45, "cm"))
+```
+
+```{r PosNegPlotSave, include = FALSE}
+ggsave("PosNegPlot.tiff", 
+       path = "Plots/",
+       width =5,
+       height = 5,
+       units = "in")
+```
+
+## Mean pupaeted and died
+
+```{r}
+df %>%
+  mutate(dead.worms = if_else(dead.worms == 0, NA, dead.worms),
+         pupaeted = if_else(pupaeted == 0, NA, pupaeted))%>%
+  drop_na()%>%
+  group_by(location)%>%
+  summarise(meanDead = mean(dead.worms),
+            sdDead = sd(dead.worms),
+            meanPupae = mean(pupaeted),
+            sdPupae = sd(pupaeted))
+```
+
+
+
