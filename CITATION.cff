@@ -1,0 +1,28 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Entomopathogenic Nematodes AAU Bachelor Project Data
+message: >-
+  If you use this dataset, please cite it using the metadata
+  from this file.
+type: dataset
+authors:
+  - given-names: M. Lyngbye
+    family-names: Casper
+    affiliation: Aalborg University
+  - given-names: D. Borhi
+    family-names: Luca
+    affiliation: Aalborg University
+  - given-names: A. Dencker
+    family-names: Thea
+    affiliation: Aalborg University
+  - given-names: N. Rasmussen
+    family-names: Jonas
+    affiliation: Aalborg University
+repository-code: >-
+  https://github.com/MeldgaardL/Entomopathogenic-Nematodes-AAU
+url: >-
+  https://github.com/MeldgaardL/Entomopathogenic-Nematodes-AAU
+license: MIT
+date-released: '2025'
