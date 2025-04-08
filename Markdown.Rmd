@@ -27,17 +27,17 @@ library(patchwork)
 When taking samples, pictures were taken of each location, this was done so that the metadata could be used for the creation of maps. This didnt work out as planned, as the GPS coordinates are inaccurate;
 
 ```{r Picture Map, warning=FALSE, error=FALSE, message=FALSE}
-#pictures = list.files(path = "Pictures/", pattern = "*.HEIC", full.names = TRUE)
-#
-#dat <- read_exif(pictures)
-#
-#dat.gps = select(dat,
-#                 SourceFile, DateTimeOriginal,
-#                 GPSLongitude, GPSLatitude,
-#                 GPSTimeStamp)
-#leaflet(dat.gps) %>%
-#  addProviderTiles("Esri.WorldImagery") %>%
-#  addMarkers(~ GPSLongitude, ~ GPSLatitude)  
+pictures = list.files(path = "Pictures/", pattern = "*.HEIC", full.names = TRUE)
+
+dat <- read_exif(pictures)
+
+dat.gps = select(dat,
+                 SourceFile, DateTimeOriginal,
+                 GPSLongitude, GPSLatitude,
+                 GPSTimeStamp)
+leaflet(dat.gps) %>%
+  addProviderTiles("Esri.WorldImagery") %>%
+  addMarkers(~ GPSLongitude, ~ GPSLatitude)  
 
 ```
 As seen, some GPS coordinates are correct, althouggh others arent, we also took GPS coordinates via the GAIA gps app, which were more stabile, this is shown below, although its only the sample locations, without the 3 subsamples.
