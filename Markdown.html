@@ -5650,10 +5650,7 @@ Rasmussen, Lucy. D. Borhi</h4>
 
 <div id="loading-libraries" class="section level2">
 <h2>Loading libraries</h2>
-<pre class="r"><code>remotes::install_github(&quot;kasperskytte/ampvis2&quot;, Ncpus = 6)
-library(ampvis2)
-library(exifr)
-library(dplyr)
+<pre class="r"><code>library(ampvis2)
 library(leaflet)
 library(readxl)
 library(tidyverse)
@@ -5662,10 +5659,12 @@ library(patchwork)</code></pre>
 </div>
 <div id="creating-maps" class="section level2">
 <h2>Creating maps</h2>
-<p>When taking samples, pictures were taken of each location, this was
-done so that the metadata could be used for the creation of maps. This
-didnt work out as planned, as the GPS coordinates are inaccurate;</p>
-<pre class="r"><code>pictures = list.files(path = &quot;Pictures/&quot;, pattern = &quot;*.HEIC&quot;, full.names = TRUE)
+<p>For each sample taken, pictures were taken of the sampling location.
+This was done in order to be able to extract metadata, which could be
+used for creating the maps. This didn’t work out as planned, as some of
+the GPS-coordinates proved to be inaccurate;</p>
+<pre class="r"><code>library(exifr)
+pictures = list.files(path = &quot;Pictures/&quot;, pattern = &quot;*.HEIC&quot;, full.names = TRUE)
 
 dat &lt;- read_exif(pictures)
 
@@ -5676,12 +5675,13 @@ dat.gps = select(dat,
 leaflet(dat.gps) %&gt;%
   addProviderTiles(&quot;Esri.WorldImagery&quot;) %&gt;%
   addMarkers(~ GPSLongitude, ~ GPSLatitude)  </code></pre>
-<div class="leaflet html-widget html-fill-item" id="htmlwidget-07ce2c6a270f5792dbce" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-07ce2c6a270f5792dbce">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["Esri.WorldImagery",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addMarkers","args":[[56.5166083333333,56.5164555555556,56.5164444444444,56.5170777777778,56.5169138888889,56.51695,56.5172111111111,56.5162861111111,56.5170388888889,56.5170333333333,56.5165361111111,56.5166361111111,56.5162083333333,56.5163722222222,56.5163805555556,56.5162194444444,56.5162666666667,56.5163805555556,56.515125,56.5150944444444,56.5150611111111,56.5151944444444,56.51535,56.5153527777778,56.5155,56.5147166666667,56.5149083333333,56.5042027777778,56.5041694444444,56.5041722222222,56.5037416666667,56.5037027777778,56.5037638888889,56.5034027777778,56.5032722222222,56.5033861111111,56.5027805555556,56.5028138888889,56.5028194444444,56.5032083333333,56.5032305555556,56.5033555555556,56.5039,56.5036083333333,56.5037416666667,56.5030527777778,56.50295,56.5031444444444,56.5029833333333,56.5039888888889,56.5025777777778,56.5025777777778,56.5022583333333,56.5022861111111,56.5022972222222],[9.41532777777778,9.41486111111111,9.41524166666667,9.4154,9.41479166666667,9.41543888888889,9.41480833333333,9.42250277777778,9.41460277777778,9.414616666666671,9.41443611111111,9.41441666666667,9.41456111111111,9.414466666666669,9.41465833333333,9.414897222222219,9.415386111111109,9.414999999999999,9.414675000000001,9.414908333333329,9.41477222222222,9.414136111111111,9.41410277777778,9.414147222222219,9.41536944444444,9.41433055555555,9.41455277777778,9.425113888888889,9.424858333333329,9.425161111111111,9.424780555555561,9.42475,9.424808333333329,9.42491388888889,9.424594444444439,9.424474999999999,9.42686111111111,9.42686944444444,9.42699166666667,9.426724999999999,9.426938888888889,9.427261111111109,9.426225000000001,9.427405555555559,9.427422222222219,9.430199999999999,9.42989722222222,9.43029444444444,9.43020555555556,9.42824166666667,9.429705555555559,9.42989722222222,9.429872222222221,9.42956388888889,9.42953888888889],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},null,null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[56.5022583333333,56.5172111111111],"lng":[9.41410277777778,9.43029444444444]}},"evals":[],"jsHooks":[]}</script>
-<p>As seen, some GPS coordinates are correct, althouggh others arent, we
-also took GPS coordinates via the GAIA gps app, which were more stabile,
-this is shown below, although its only the sample locations, without the
-3 subsamples.</p>
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-ec71d60de71842069440" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-ec71d60de71842069440">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["Esri.WorldImagery",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addMarkers","args":[[56.5166083333333,56.5164555555556,56.5164444444444,56.5170777777778,56.5169138888889,56.51695,56.5172111111111,56.5162861111111,56.5170388888889,56.5170333333333,56.5165361111111,56.5166361111111,56.5162083333333,56.5163722222222,56.5163805555556,56.5162194444444,56.5162666666667,56.5163805555556,56.515125,56.5150944444444,56.5150611111111,56.5151944444444,56.51535,56.5153527777778,56.5155,56.5147166666667,56.5149083333333,56.5042027777778,56.5041694444444,56.5041722222222,56.5037416666667,56.5037027777778,56.5037638888889,56.5034027777778,56.5032722222222,56.5033861111111,56.5027805555556,56.5028138888889,56.5028194444444,56.5032083333333,56.5032305555556,56.5033555555556,56.5039,56.5036083333333,56.5037416666667,56.5030527777778,56.50295,56.5031444444444,56.5029833333333,56.5039888888889,56.5025777777778,56.5025777777778,56.5022583333333,56.5022861111111,56.5022972222222],[9.41532777777778,9.41486111111111,9.41524166666667,9.4154,9.41479166666667,9.41543888888889,9.41480833333333,9.42250277777778,9.41460277777778,9.414616666666671,9.41443611111111,9.41441666666667,9.41456111111111,9.414466666666669,9.41465833333333,9.414897222222219,9.415386111111109,9.414999999999999,9.414675000000001,9.414908333333329,9.41477222222222,9.414136111111111,9.41410277777778,9.414147222222219,9.41536944444444,9.41433055555555,9.41455277777778,9.425113888888889,9.424858333333329,9.425161111111111,9.424780555555561,9.42475,9.424808333333329,9.42491388888889,9.424594444444439,9.424474999999999,9.42686111111111,9.42686944444444,9.42699166666667,9.426724999999999,9.426938888888889,9.427261111111109,9.426225000000001,9.427405555555559,9.427422222222219,9.430199999999999,9.42989722222222,9.43029444444444,9.43020555555556,9.42824166666667,9.429705555555559,9.42989722222222,9.429872222222221,9.42956388888889,9.42953888888889],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},null,null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[56.5022583333333,56.5172111111111],"lng":[9.41410277777778,9.43029444444444]}},"evals":[],"jsHooks":[]}</script>
+<p>As shown above, while some GPS-coordinates are correct, others are
+not. Therefore, the GAIA GPS app was also used in order to obtain
+coordinates for the making of maps. The coordinates provided by GAIA
+proved to be more consistent, as shown below. However, only the sample
+locations were noted, as the 3 subsamples were excluded:</p>
 <pre class="r"><code>datgps = read_excel(&quot;Data/Sample_location.xlsx&quot;)
 
 leaflet(datgps,
@@ -5709,15 +5709,16 @@ leaflet(datgps,
              zoomLevelOffset = -6.69,
              aimingRectOptions = list(color = &quot;red&quot;, weight = 1, clickable = FALSE))%&gt;%
   addScaleBar(position = &quot;topleft&quot;)</code></pre>
-<div class="leaflet html-widget html-fill-item" id="htmlwidget-c6603ff6fde4eb0a68f9" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-c6603ff6fde4eb0a68f9">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}},"zoomControl":false},"calls":[{"method":"addProviderTiles","args":["Esri.WorldImagery",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addCircleMarkers","args":[[56.5042,56.50375,56.50333,56.5028,56.50324,56.50366,56.50304,56.50256,56.50229,56.51648,56.51695,56.51706,56.51662,56.51626,56.51615,56.51504,56.5153894946505,56.51487],[9.425079999999999,9.42482,9.42459,9.42695,9.42719,9.427390000000001,9.43017,9.42975,9.429539999999999,9.415480000000001,9.41536,9.414759999999999,9.414580000000001,9.414529999999999,9.41506,9.414809999999999,9.414069252097431,9.414149999999999],3,null,null,{"interactive":true,"className":"","stroke":true,"color":"dodgerblue","weight":5,"opacity":0.5,"fill":true,"fillColor":"dodgerblue","fillOpacity":0.2},null,null,null,null,["B1","B2","B3","B4","B5","B6","B7","B8","B9","F1","F2","F3","F4","F5","F6","F7","F8","F9"],{"interactive":false,"permanent":true,"direction":"top","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":true,"style":{"color":"white","font-family":"serif","font-style":"bold","box-shadow":"3px 3px rgba(0,0,0,0)","font-size":"14px","border-color":"rgba(0,0,0,0)"},"className":"","sticky":true},null]},{"method":"addMiniMap","args":[null,null,"topright",200,250,19,19,-6.69,false,false,false,false,false,false,{"color":"red","weight":1,"clickable":false},{"color":"#000000","weight":1,"clickable":false,"opacity":0,"fillOpacity":0},{"hideText":"Hide MiniMap","showText":"Show MiniMap"},[]]},{"method":"addScaleBar","args":[{"maxWidth":100,"metric":true,"imperial":true,"updateWhenIdle":true,"position":"topleft"}]}],"limits":{"lat":[56.50229,56.51706],"lng":[9.414069252097431,9.43017]}},"evals":[],"jsHooks":[]}</script>
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-2bf8097f2db63c7444e4" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-2bf8097f2db63c7444e4">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}},"zoomControl":false},"calls":[{"method":"addProviderTiles","args":["Esri.WorldImagery",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addCircleMarkers","args":[[56.5042,56.50375,56.50333,56.5028,56.50324,56.50366,56.50304,56.50256,56.50229,56.51648,56.51695,56.51706,56.51662,56.51626,56.51615,56.51504,56.5153894946505,56.51487],[9.425079999999999,9.42482,9.42459,9.42695,9.42719,9.427390000000001,9.43017,9.42975,9.429539999999999,9.415480000000001,9.41536,9.414759999999999,9.414580000000001,9.414529999999999,9.41506,9.414809999999999,9.414069252097431,9.414149999999999],3,null,null,{"interactive":true,"className":"","stroke":true,"color":"dodgerblue","weight":5,"opacity":0.5,"fill":true,"fillColor":"dodgerblue","fillOpacity":0.2},null,null,null,null,["B1","B2","B3","B4","B5","B6","B7","B8","B9","F1","F2","F3","F4","F5","F6","F7","F8","F9"],{"interactive":false,"permanent":true,"direction":"top","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":true,"style":{"color":"white","font-family":"serif","font-style":"bold","box-shadow":"3px 3px rgba(0,0,0,0)","font-size":"14px","border-color":"rgba(0,0,0,0)"},"className":"","sticky":true},null]},{"method":"addMiniMap","args":[null,null,"topright",200,250,19,19,-6.69,false,false,false,false,false,false,{"color":"red","weight":1,"clickable":false},{"color":"#000000","weight":1,"clickable":false,"opacity":0,"fillOpacity":0},{"hideText":"Hide MiniMap","showText":"Show MiniMap"},[]]},{"method":"addScaleBar","args":[{"maxWidth":100,"metric":true,"imperial":true,"updateWhenIdle":true,"position":"topleft"}]}],"limits":{"lat":[56.50229,56.51706],"lng":[9.414069252097431,9.43017]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="data-from-laboratory" class="section level2">
 <h2>Data from laboratory</h2>
-<p>We have noted how many larvae died and pupaeted under the
-experiments, we had 3 different rebaiting days, so three sheets, one for
-each baiting period. These will be bound together, and mutated so that
-sample and subsample is a factor, rather than an integer.</p>
+<p>The number of dead and pupated waxworms during the experiments was
+noted. There were three different rebaiting days, and therefore three
+sheets - one for each baiting period. These are bound together and
+mutated, in order to transform the sample and subsample into a factor,
+rather than an integer.</p>
 <pre class="r"><code>df =  rbind(read_excel(&quot;Data/Data.xlsx&quot;, sheet = 1),
             read_excel(&quot;Data/Data.xlsx&quot;, sheet = 2),
             read_excel(&quot;Data/Data.xlsx&quot;, sheet = 3)) %&gt;%
@@ -5741,9 +5742,10 @@ df</code></pre>
 </div>
 <div id="positive-negative-plot-of-samples" class="section level2">
 <h2>Positive Negative Plot of samples</h2>
-<p>To find out which of the samples has been positive for EPNs, we noted
-it in its own column, after confirming that EPNs are present under
-microscope. This can be used, as seen below.</p>
+<p>After confirming that EPNs were present, while examining the samples
+under the microscope, their occurence was noted in a separate column.
+This was done in order to survey which of the samples were positive for
+EPNs. This could be used and visualized as shown below:</p>
 <pre class="r"><code>grid_forest = df %&gt;%
   filter(location == &quot;Forest&quot;)%&gt;%
   ggplot(aes(sample,subsample))+
@@ -5817,36 +5819,35 @@ PosNegPlot</code></pre>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] patchwork_1.3.0 ggthemes_5.1.0  lubridate_1.9.4 forcats_1.0.0  
-##  [5] stringr_1.5.1   purrr_1.0.4     readr_2.1.5     tidyr_1.3.1    
-##  [9] tibble_3.2.1    tidyverse_2.0.0 readxl_1.4.5    leaflet_2.2.2  
-## [13] dplyr_1.1.4     exifr_0.3.2     ampvis2_2.8.9   ggplot2_3.5.1  
+##  [1] exifr_0.3.2     patchwork_1.3.0 ggthemes_5.1.0  lubridate_1.9.4
+##  [5] forcats_1.0.0   stringr_1.5.1   dplyr_1.1.4     purrr_1.0.4    
+##  [9] readr_2.1.5     tidyr_1.3.1     tibble_3.2.1    tidyverse_2.0.0
+## [13] readxl_1.4.5    leaflet_2.2.2   ampvis2_2.8.9   ggplot2_3.5.1  
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] gtable_0.3.6            xfun_0.52               bslib_0.9.0            
-##  [4] htmlwidgets_1.6.4       remotes_2.5.0           ggrepel_0.9.6          
-##  [7] lattice_0.22-6          tzdb_0.5.0              leaflet.providers_2.0.0
-## [10] vctrs_0.6.5             tools_4.4.3             crosstalk_1.2.1        
-## [13] generics_0.1.3          curl_6.2.2              parallel_4.4.3         
-## [16] cluster_2.1.8           pkgconfig_2.0.3         Matrix_1.7-2           
-## [19] data.table_1.17.0       RColorBrewer_1.1-3      lifecycle_1.0.4        
-## [22] farver_2.1.2            compiler_4.4.3          textshaping_1.0.0      
-## [25] munsell_0.5.1           permute_0.9-7           htmltools_0.5.8.1      
-## [28] sass_0.4.10             yaml_2.3.10             lazyeval_0.2.2         
-## [31] plotly_4.10.4           pillar_1.10.2           crayon_1.5.3           
-## [34] jquerylib_0.1.4         MASS_7.3-64             cachem_1.1.0           
-## [37] vegan_2.6-10            nlme_3.1-167            tidyselect_1.2.1       
-## [40] digest_0.6.37           stringi_1.8.7           labeling_0.4.3         
-## [43] splines_4.4.3           fastmap_1.2.0           grid_4.4.3             
-## [46] colorspace_2.1-1        cli_3.6.4               magrittr_2.0.3         
-## [49] utf8_1.2.4              ape_5.8-1               withr_3.0.2            
-## [52] scales_1.3.0            rappdirs_0.3.3          timechange_0.3.0       
-## [55] rmarkdown_2.29          httr_1.4.7              cellranger_1.1.0       
-## [58] ragg_1.3.3              hms_1.1.3               evaluate_1.0.3         
-## [61] knitr_1.50              viridisLite_0.4.2       mgcv_1.9-1             
-## [64] rlang_1.1.5             Rcpp_1.0.14             glue_1.8.0             
-## [67] rstudioapi_0.17.1       jsonlite_2.0.0          R6_2.6.1               
-## [70] plyr_1.8.9              systemfonts_1.2.1</code></pre>
+##  [4] htmlwidgets_1.6.4       ggrepel_0.9.6           lattice_0.22-6         
+##  [7] tzdb_0.5.0              leaflet.providers_2.0.0 vctrs_0.6.5            
+## [10] tools_4.4.3             crosstalk_1.2.1         generics_0.1.3         
+## [13] parallel_4.4.3          cluster_2.1.8           pkgconfig_2.0.3        
+## [16] Matrix_1.7-2            data.table_1.17.0       RColorBrewer_1.1-3     
+## [19] lifecycle_1.0.4         farver_2.1.2            compiler_4.4.3         
+## [22] textshaping_1.0.0       munsell_0.5.1           permute_0.9-7          
+## [25] htmltools_0.5.8.1       sass_0.4.10             yaml_2.3.10            
+## [28] lazyeval_0.2.2          plotly_4.10.4           pillar_1.10.2          
+## [31] crayon_1.5.3            jquerylib_0.1.4         MASS_7.3-64            
+## [34] cachem_1.1.0            vegan_2.6-10            nlme_3.1-167           
+## [37] tidyselect_1.2.1        digest_0.6.37           stringi_1.8.7          
+## [40] labeling_0.4.3          splines_4.4.3           fastmap_1.2.0          
+## [43] grid_4.4.3              colorspace_2.1-1        cli_3.6.4              
+## [46] magrittr_2.0.3          utf8_1.2.4              ape_5.8-1              
+## [49] withr_3.0.2             rappdirs_0.3.3          scales_1.3.0           
+## [52] timechange_0.3.0        rmarkdown_2.29          httr_1.4.7             
+## [55] cellranger_1.1.0        ragg_1.3.3              hms_1.1.3              
+## [58] evaluate_1.0.3          knitr_1.50              viridisLite_0.4.2      
+## [61] mgcv_1.9-1              rlang_1.1.5             Rcpp_1.0.14            
+## [64] glue_1.8.0              rstudioapi_0.17.1       jsonlite_2.0.0         
+## [67] R6_2.6.1                plyr_1.8.9              systemfonts_1.2.1</code></pre>
 </div>
 
 

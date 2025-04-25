@@ -3,7 +3,6 @@ title: "Markdown Report"
 author: "Casper M. Lyngbye, Thea A. Dencker, Jonas N. Rasmussen, Lucy. D. Borhi"
 date: "2025-04-07"
 output: html_document
-
 ---
 
 ```{r setup, include=FALSE}
@@ -13,10 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Loading libraries
 
 ```{r Libraries, warning=FALSE, error=FALSE, message=FALSE}
-remotes::install_github("kasperskytte/ampvis2", Ncpus = 6)
 library(ampvis2)
-library(exifr)
-library(dplyr)
 library(leaflet)
 library(readxl)
 library(tidyverse)
@@ -26,9 +22,10 @@ library(patchwork)
 
 
 ## Creating maps
-When taking samples, pictures were taken of each location, this was done so that the metadata could be used for the creation of maps. This didnt work out as planned, as the GPS coordinates are inaccurate;
+For each sample taken, pictures were taken of the sampling location. This was done in order to be able to extract metadata, which could be used for creating the maps. This didn't work out as planned, as some of the GPS-coordinates proved to be inaccurate;
 
 ```{r Picture_Map, warning=FALSE, error=FALSE, message=FALSE}
+library(exifr)
 pictures = list.files(path = "Pictures/", pattern = "*.HEIC", full.names = TRUE)
 
 dat <- read_exif(pictures)
@@ -42,7 +39,8 @@ leaflet(dat.gps) %>%
   addMarkers(~ GPSLongitude, ~ GPSLatitude)  
 
 ```
-As seen, some GPS coordinates are correct, althouggh others arent, we also took GPS coordinates via the GAIA gps app, which were more stabile, this is shown below, although its only the sample locations, without the 3 subsamples.
+
+As shown above, while some GPS-coordinates are correct, others are not. Therefore, the GAIA GPS app was also used in order to obtain coordinates for the making of maps. The coordinates provided by GAIA proved to be more consistent, as shown below. However, only the sample locations were noted, as the 3 subsamples were excluded:
 
 
 ```{r Janneke_Gps_Map, warning=FALSE, error=FALSE, message=FALSE}
@@ -78,8 +76,7 @@ leaflet(datgps,
 
 
 ## Data from laboratory
-
-We have noted how many larvae died and pupaeted under the experiments, we had 3 different rebaiting days, so three sheets, one for each baiting period. These will be bound together, and mutated so that sample and subsample is a factor, rather than an integer.
+The number of dead and pupated waxworms during the experiments was noted. There were three different rebaiting days, and therefore three sheets - one for each baiting period. These are bound together and mutated, in order to transform the sample and subsample into a factor, rather than an integer.
 
 ```{r LarvaeData}
 df =  rbind(read_excel("Data/Data.xlsx", sheet = 1),
@@ -92,7 +89,7 @@ df
 
 
 ## Positive Negative Plot of samples
-To find out which of the samples has been positive for EPNs, we noted it in its own column, after confirming that EPNs are present under microscope. This can be used, as seen below.
+After confirming that EPNs were present, while examining the samples under the microscope, their occurence was noted in a separate column. This was done in order to survey which of the samples were positive for EPNs. This could be used and visualized as shown below:
 
 ```{r PosNegPlot, warning=FALSE, error=FALSE}
 grid_forest = df %>%
