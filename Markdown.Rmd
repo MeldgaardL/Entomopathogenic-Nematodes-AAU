@@ -13,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Loading libraries
 
 ```{r Libraries, warning=FALSE, error=FALSE, message=FALSE}
+remotes::install_github("kasperskytte/ampvis2", Ncpus = 6)
+library(ampvis2)
 library(exifr)
 library(dplyr)
 library(leaflet)
@@ -26,7 +28,7 @@ library(patchwork)
 ## Creating maps
 When taking samples, pictures were taken of each location, this was done so that the metadata could be used for the creation of maps. This didnt work out as planned, as the GPS coordinates are inaccurate;
 
-```{r Picture Map, warning=FALSE, error=FALSE, message=FALSE}
+```{r Picture_Map, warning=FALSE, error=FALSE, message=FALSE}
 pictures = list.files(path = "Pictures/", pattern = "*.HEIC", full.names = TRUE)
 
 dat <- read_exif(pictures)
@@ -43,7 +45,7 @@ leaflet(dat.gps) %>%
 As seen, some GPS coordinates are correct, althouggh others arent, we also took GPS coordinates via the GAIA gps app, which were more stabile, this is shown below, although its only the sample locations, without the 3 subsamples.
 
 
-```{r GoodMap, warning=FALSE, error=FALSE, message=FALSE}
+```{r Janneke_Gps_Map, warning=FALSE, error=FALSE, message=FALSE}
 datgps = read_excel("Data/Sample_location.xlsx")
 
 leaflet(datgps,
@@ -137,15 +139,27 @@ ggsave(plot = PosNegPlot,
 
 ```{r}
 df %>%
-  mutate(dead.worms = if_else(dead.worms == 0, NA, dead.worms),
-         pupaeted = if_else(pupaeted == 0, NA, pupaeted))%>%
-  drop_na()%>%
-  group_by(location)%>%
+  group_by(location, date)%>%
   summarise(meanDead = mean(dead.worms),
             sdDead = sd(dead.worms),
-            meanPupae = mean(pupaeted),
-            sdPupae = sd(pupaeted))
+            .groups = "drop") %>%
+  ggplot(aes(date, meanDead, color = location))+
+  geom_errorbar(aes(ymin = meanDead-sdDead,
+                    ymax = meanDead+sdDead),
+                width = .1,
+                position = position_dodge(0.5))+
+  geom_point(position = position_dodge(0.5))+
+  labs(
+    y= "Mean of dead larvae",
+    x= NULL)+
+  theme_classic()
 ```
 
 
+## Session Info
+Session info for data processing used.
+
+```{r}
+sessionInfo()
+```
 
