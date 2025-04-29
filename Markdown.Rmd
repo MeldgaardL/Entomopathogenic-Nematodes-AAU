@@ -18,6 +18,13 @@ library(readxl)
 library(tidyverse)
 library(ggthemes)
 library(patchwork)
+library(kableExtra)
+library(exifr)
+```
+
+## Setting theme
+```{r}
+theme_set(theme_classic())
 ```
 
 
@@ -25,7 +32,6 @@ library(patchwork)
 For each sample taken, pictures were taken of the sampling location. This was done in order to be able to extract metadata, which could be used for creating the maps. This didn't work out as planned, as some of the GPS-coordinates proved to be inaccurate;
 
 ```{r Picture_Map, warning=FALSE, error=FALSE, message=FALSE}
-library(exifr)
 pictures = list.files(path = "Pictures/", pattern = "*.HEIC", full.names = TRUE)
 
 dat <- read_exif(pictures)
@@ -84,7 +90,7 @@ df =  rbind(read_excel("Data/Data.xlsx", sheet = 1),
             read_excel("Data/Data.xlsx", sheet = 3)) %>%
       mutate(sample    = as.factor(sample),
              subsample = as.factor(subsample))
-df
+df 
 ```
 
 
@@ -123,9 +129,10 @@ PosNegPlot = (grid_forest/grid_beet) +
 PosNegPlot
 ```
 
-```{r PosNegPlotSave, include = FALSE}
+Saving the plot;
+```{r PosNegPlotSave}
 ggsave(plot = PosNegPlot,
-       filename = "PosNegPlot.tiff", 
+       filename = "PosNegPlot.png", 
        path = "Plots/",
        width =5,
        height = 5,
@@ -134,8 +141,9 @@ ggsave(plot = PosNegPlot,
 
 ## Mean pupaeted and died
 
-```{r}
-df %>%
+```{r MeanDeadPlot}
+mean_dead_plot = df %>%
+  filter(infected == "Positive")%>%
   group_by(location, date)%>%
   summarise(meanDead = mean(dead.worms),
             sdDead = sd(dead.worms),
@@ -144,12 +152,71 @@ df %>%
   geom_errorbar(aes(ymin = meanDead-sdDead,
                     ymax = meanDead+sdDead),
                 width = .1,
-                position = position_dodge(0.5))+
+                position = position_dodge(0.5),
+                show.legend = F)+
   geom_point(position = position_dodge(0.5))+
   labs(
-    y= "Mean of dead larvae",
-    x= NULL)+
-  theme_classic()
+    y= "Dead larvae",
+    x= NULL,
+    color = "Location")+
+  theme_classic()+
+  theme(legend.position = c(0.1, 0.9))
+
+mean_dead_plot
+```
+
+We save this plot
+```{r MeanDeadSave}
+ggsave(plot = mean_dead_plot,
+       filename = "dead_larvae.png", 
+       path = "Plots/",
+       width =6,
+       height = 4,
+       units = "in")
+```
+
+Of all positive samples, how many were found dead in the samples?
+```{r MeanDeadTable}
+df %>%
+  filter(infected == "Positive")%>%
+  group_by(location, date)%>%
+  summarise(n = n(),
+            meanDead = mean(dead.worms),
+            sdDead = sd(dead.worms),
+            .groups = "drop")
+```
+
+We can also plot the amount of dead larvae, vs the amount of positive dead larvae;
+
+```{r DeadPosNeg}
+pos_neg_dead = df %>%
+  group_by(infected, location)%>%
+  summarise(mean_dead = mean(dead.worms),
+            sd_dead = sd(dead.worms))%>%
+  ggplot(aes(location, mean_dead, color = infected))+
+  geom_errorbar(aes(ymin = mean_dead-sd_dead,
+                    ymax = mean_dead+sd_dead),
+                width = .1,
+                position = position_dodge(0.5),
+                show.legend = F)+
+  geom_point(position = position_dodge(0.5))+
+  labs(x = NULL,
+       y = "Dead larvae",
+       color = "Infection Status")+
+  theme(legend.position = c(0.11, 0.9))
+
+pos_neg_dead
+```
+
+
+We save this plot
+```{r DeadPosNegSave}
+ggsave(plot = pos_neg_dead,
+       filename = "pos_neg_dead.png", 
+       path = "Plots/",
+       width =6,
+       height = 4,
+       units = "in")
 ```
 
 
