@@ -1,8 +1,11 @@
 ---
 title: "Markdown Report"
 author: "Casper M. Lyngbye, Thea A. Dencker, Jonas N. Rasmussen, Lucy. D. Borhi"
-date: "2025-04-07"
-output: html_document
+date: "2025-05-05"
+output:
+  html_document:
+    toc: true
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -90,11 +93,13 @@ df =  rbind(read_excel("Data/Data.xlsx", sheet = 1),
             read_excel("Data/Data.xlsx", sheet = 3)) %>%
       mutate(sample    = as.factor(sample),
              subsample = as.factor(subsample))
-df 
+head(df, 10)
 ```
 
+## Plots
+We use the `tidyverse` package, which includes `ggplot2` for all plots.
 
-## Positive Negative Plot of samples
+### Positive Negative Plot of samples
 After confirming that EPNs were present, while examining the samples under the microscope, their occurence was noted in a separate column. This was done in order to survey which of the samples were positive for EPNs. This could be used and visualized as shown below:
 
 ```{r PosNegPlot, warning=FALSE, error=FALSE}
@@ -106,8 +111,7 @@ grid_forest = df %>%
                     name = "")+
   labs(x = "Sample",
        y = "Subsample")+
-  facet_wrap(~date)+
-  theme_classic()
+  facet_wrap(~date)
 
 grid_beet = df %>%
   filter(location == "Beet Field")%>%
@@ -117,9 +121,7 @@ grid_beet = df %>%
                     name = "")+
   labs(y = "Subsample",
        x = "Sample")+
-  facet_wrap(~date)+
-  theme_classic()
-
+  facet_wrap(~date)
 
 PosNegPlot = (grid_forest/grid_beet) + 
               plot_annotation(tag_levels = "A")+
@@ -139,29 +141,33 @@ ggsave(plot = PosNegPlot,
        units = "in")
 ```
 
-## Mean pupaeted and died
+### Mean pupaeted and died
 
-```{r MeanDeadPlot}
+```{r MeanDeadPlot, warning = F, message = F}
 mean_dead_plot = df %>%
-  filter(infected == "Positive")%>%
+  #filter(infected == "Positive")%>%
   group_by(location, date)%>%
-  summarise(meanDead = mean(dead.worms),
-            sdDead = sd(dead.worms),
+  summarise(meanDead = round(mean(dead.worms),2),
+            sdDead  =  round(sd(dead.worms),2),
             .groups = "drop") %>%
-  ggplot(aes(date, meanDead, color = location))+
+  ggplot(aes(date, meanDead, color = location,
+             label = paste(meanDead, sdDead, sep = "±")), 
+             parse = TRUE)+
   geom_errorbar(aes(ymin = meanDead-sdDead,
                     ymax = meanDead+sdDead),
                 width = .1,
                 position = position_dodge(0.5),
                 show.legend = F)+
   geom_point(position = position_dodge(0.5))+
+  geom_text(position = position_dodge(1.5),
+            show.legend = F)+
   labs(
     y= "Dead larvae",
-    x= NULL,
-    color = "Location")+
-  theme_classic()+
+    x= NULL)+
+    scale_color_manual(name = "Location",
+                       values = c("Beet Field" = "darkblue", 
+                                  "Forest" = "#88bc3d"))+
   theme(legend.position = c(0.1, 0.9))
-
 mean_dead_plot
 ```
 
@@ -186,25 +192,31 @@ df %>%
             .groups = "drop")
 ```
 
+### Positive and negative mean dead larvae
 We can also plot the amount of dead larvae, vs the amount of positive dead larvae;
 
-```{r DeadPosNeg}
+```{r DeadPosNeg, warning = F, message = F}
 pos_neg_dead = df %>%
   group_by(infected, location)%>%
-  summarise(mean_dead = mean(dead.worms),
-            sd_dead = sd(dead.worms))%>%
-  ggplot(aes(location, mean_dead, color = infected))+
+  summarise(mean_dead = round(mean(dead.worms),2),
+            sd_dead = round(sd(dead.worms),2))%>%
+  ggplot(aes(location, mean_dead, color = infected, 
+             label = paste(mean_dead, sd_dead, sep = "±")), 
+                      parse = TRUE)+
   geom_errorbar(aes(ymin = mean_dead-sd_dead,
                     ymax = mean_dead+sd_dead),
                 width = .1,
                 position = position_dodge(0.5),
                 show.legend = F)+
   geom_point(position = position_dodge(0.5))+
+  geom_text(position = position_dodge(1.15),
+            show.legend = F)+
   labs(x = NULL,
-       y = "Dead larvae",
+       y = "Mean Dead Larvae per Sample",
        color = "Infection Status")+
+  scale_color_manual(values = c("Negative" = "darkgray", 
+                                "Positive" = "dodgerblue"))+
   theme(legend.position = c(0.11, 0.9))
-
 pos_neg_dead
 ```
 
@@ -217,6 +229,11 @@ ggsave(plot = pos_neg_dead,
        width =6,
        height = 4,
        units = "in")
+```
+
+
+```{r}
+
 ```
 
 
