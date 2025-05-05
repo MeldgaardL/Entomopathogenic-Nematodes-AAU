@@ -97,7 +97,7 @@ head(df, 10)
 ```
 
 ## Plots
-We use the `tidyverse` package, which includes `ggplot2` for all plots.
+We use the `tidyverse` package, which includes the `ggplot2` package which is used for all plots.
 
 ### Positive Negative Plot of samples
 After confirming that EPNs were present, while examining the samples under the microscope, their occurence was noted in a separate column. This was done in order to survey which of the samples were positive for EPNs. This could be used and visualized as shown below:
@@ -106,7 +106,7 @@ After confirming that EPNs were present, while examining the samples under the m
 grid_forest = df %>%
   filter(location == "Forest")%>%
   ggplot(aes(sample,subsample))+
-  geom_tile(aes(fill = infected, width = 1, height = 0.4), alpha  = .8, color = "black")+
+  geom_tile(aes(fill = infected, width = 1, height = 0.4), color = "black")+
   scale_fill_manual(values = c("#eb346e", "#89eb34"),
                     name = "")+
   labs(x = "Sample",
@@ -116,7 +116,7 @@ grid_forest = df %>%
 grid_beet = df %>%
   filter(location == "Beet Field")%>%
   ggplot(aes(sample,subsample))+
-  geom_tile(aes(fill = infected, width = 1, height = 0.4), alpha  = .8, color = "black")+
+  geom_tile(aes(fill = infected, width = 1, height = 0.4), color = "black")+
   scale_fill_manual(values = c("#eb346e", "#89eb34"),
                     name = "")+
   labs(y = "Subsample",
@@ -132,6 +132,7 @@ PosNegPlot
 ```
 
 Saving the plot;
+
 ```{r PosNegPlotSave}
 ggsave(plot = PosNegPlot,
        filename = "PosNegPlot.png", 
@@ -168,6 +169,7 @@ mean_dead_plot = df %>%
                        values = c("Beet Field" = "darkblue", 
                                   "Forest" = "#88bc3d"))+
   theme(legend.position = c(0.1, 0.9))
+
 mean_dead_plot
 ```
 
@@ -217,6 +219,8 @@ pos_neg_dead = df %>%
   scale_color_manual(values = c("Negative" = "darkgray", 
                                 "Positive" = "dodgerblue"))+
   theme(legend.position = c(0.11, 0.9))
+
+
 pos_neg_dead
 ```
 
@@ -231,10 +235,6 @@ ggsave(plot = pos_neg_dead,
        units = "in")
 ```
 
-
-```{r}
-
-```
 
 
 ## Session Info
