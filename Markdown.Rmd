@@ -152,7 +152,7 @@ mean_dead_plot = df %>%
             sdDead  =  round(sd(dead.worms),2),
             .groups = "drop") %>%
   ggplot(aes(date, meanDead, color = location,
-             label = paste(meanDead, sdDead, sep = "±")), 
+             label = paste(meanDead, sdDead, sep = " ± ")), 
              parse = TRUE)+
   geom_errorbar(aes(ymin = meanDead-sdDead,
                     ymax = meanDead+sdDead),
@@ -203,7 +203,7 @@ pos_neg_dead = df %>%
   summarise(mean_dead = round(mean(dead.worms),2),
             sd_dead = round(sd(dead.worms),2))%>%
   ggplot(aes(location, mean_dead, color = infected, 
-             label = paste(mean_dead, sd_dead, sep = "±")), 
+             label = paste(mean_dead, sd_dead, sep = " ± ")), 
                       parse = TRUE)+
   geom_errorbar(aes(ymin = mean_dead-sd_dead,
                     ymax = mean_dead+sd_dead),
